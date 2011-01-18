@@ -108,7 +108,7 @@
               || localStorage["upshot_id"]=="undefined" 
               || localStorage["upshot_id"]=="")
           {
-            connexion(localStorage["upshot_email"], localStorage["upshot_password"]);
+            connexion(localStorage["upshot_email"], localStorage["upshot_token"]);
           }
 
           // init the accounts list
@@ -206,6 +206,8 @@
         formData.append("upshot[base64]", document.getElementById('base64').value);
         formData.append("upshot[title]", document.getElementById('title').value);
         formData.append("upshot[temporary_owner_tag_list]", document.getElementById('tag_list').value);
+        formData.append("email", localStorage["upshot_email"]);
+        formData.append("token", localStorage["upshot_token"]);
         
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
