@@ -1,0 +1,18 @@
+{
+//Required
+"name": "UpShot",
+"version": "0.3",
+"description": "An Extension for UpShot to help screenshooting drafts easily",
+"icons": {"16": "logo-upshot-just-16.png",
+          "32":"logo-upshot-just-32.png",
+          "48":"logo-upshot-just-48.png",
+          "128":"logo-upshot-just-128.png"
+        },
+"browser_action": {
+    "default_icon": "upshot.png",
+    "default_title": "UpShot Chrome Extension",
+    "popup": "popup.html"
+  },
+"permissions":["tabs", "http://upshotapp.com/", "http://eupchote.com/", "http://upshot.dev/", "http://*/*", "https://*/*"],
+"options_page": "options.html"
+}

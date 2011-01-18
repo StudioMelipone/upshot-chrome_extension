@@ -1,0 +1,262 @@
+<html>
+  <head>
+    <title>UpShot Chrome Extension</title>
+  </head>
+  <style type="text/css" media="screen">
+    button#Draft{
+      background: #EEE;
+      text-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 0px;
+      color: #3B3B3B !important;
+      font-size: 12px;
+      padding: 6px 18px;
+      -webkit-box-align: center;
+      -webkit-box-sizing: border-box;
+      -webkit-appearance: push-button;
+    
+      -webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0px 1px 3px;
+      border: 1px solid rgba(0, 0, 0, 0.199219);
+      border-bottom-left-radius: 5px 5px;
+      border-bottom-right-radius: 5px 5px;
+      border-top-left-radius: 5px 5px;
+      border-top-right-radius: 5px 5px;
+      cursor: pointer;
+      font-weight: normal;
+      line-height: 22px;
+      margin-top: 9px;
+      text-decoration: none;
+    }
+    button#Draft:hover{
+      background: #79A0B2;
+    }
+    button.red{
+      background: #EEE;
+      text-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 0px;
+      color: #912A0C !important;
+      font-size: 12px;
+      padding: 6px 12px;
+      -webkit-box-align: center;
+      -webkit-box-sizing: border-box;
+      -webkit-appearance: push-button;
+      
+      -webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0px 1px 3px;
+      border: 1px solid rgba(0, 0, 0, 0.199219);
+      border-bottom-left-radius: 5px 5px;
+      border-bottom-right-radius: 5px 5px;
+      border-top-left-radius: 5px 5px;
+      border-top-right-radius: 5px 5px;
+      cursor: pointer;
+      font-weight: normal;
+      line-height: 14px;
+      margin-top: 9px;
+      text-decoration: none;
+    }
+    button.red:hover{
+      background-color: #F7E8E3;
+    }
+    img{
+      border: 1px solid #ccc;
+    }
+  </style>
+  <body>
+    <div id="main">
+      <img id="upshot" width="240"/>
+      <div>
+        <p id="accounts"></p>
+        <form action="upshot_submit" method="post" accept-charset="utf-8" id="new_upshot" enctype="multipart/form-data">
+          <input type="hidden" name="upshot[base64]" value="" id="base64">
+          <input type="hidden" name="upshot[title]" value="" id="title">
+          <input type="hidden" name="upshot[temporary_owner_tag_list]" value="" id="tag_list">
+          <p>
+            <button class="red" onclick="trackButton('cancel');" type="reset" formnovalidate="formnovalidate">Cancel</button>
+            <button type="button" name="commit" value="Draft" id="Draft" onclick="submission();" formnovalidate="formnovalidate">Draft</button>
+          <p>
+        </form>
+      </div>
+    </div>
+    <script type="text/javascript" charset="utf-8" src="base64.js">
+    </script>
+    <script type="text/javascript" charset="utf-8" src="upshot.js">
+    </script>
+    <script>
+      
+      // If no config yet : options panel to do it.
+      if(localStorage["upshot_id"]==null || localStorage["upshot_id"]=="null"){
+        document.getElementById('new_upshot').style.display = "none";
+        document.getElementById('upshot').style.display = "none";
+        document.getElementById('accounts').style.width = 300;
+        document.getElementById('accounts').innerHTML = "Votre compte n'est pas param&eacute;tr&eacute; !<br/>" 
+                                                        + "Connectez votre compte UpShot, et c'est parti !" ;
+        // document.getElementById('optionner').addEventListener('click', function(){
+          chrome.tabs.create({url:"options.html"});
+        // });
+      }
+      else {
+        // Take the screenshot and show it
+        chrome.tabs.captureVisibleTab(null, function(img) {
+
+          // /////////////
+          // SCREENSHOT
+          // ////////////
+          var screenshotUrl = img;
+          document.getElementById('upshot').src = screenshotUrl;
+
+          // ////////////
+          // CONNEXION
+          // ////////////
+          if(localStorage["upshot_id"]==null 
+              || localStorage["upshot_id"]=="null" 
+              || localStorage["upshot_id"]=="undefined" 
+              || localStorage["upshot_id"]=="")
+          {
+            connexion(localStorage["upshot_email"], localStorage["upshot_password"]);
+          }
+
+          // init the accounts list
+          set_accounts_list();
+
+          // SET THE base64 IN FORM
+          // Have to remove the needed beinning of the string
+          // needed to be shown in popop img tag, but not a valid base64 format:
+          // data:image/jpg;base64,THE_BASE64_CODE
+          var length = img.length;
+          document.getElementById("base64").value = screenshotUrl.substr(22, length);
+
+          // SET THE USER_ID
+          // document.getElementById("user_id").value = localStorage["upshot_id"];
+
+          // SET THE TITLE IN FORM
+          chrome.tabs.getSelected(null, function(tab){
+              document.getElementById("title").value = tab.url;
+          });
+
+        });
+      }
+
+      
+      // Create the select tag in the popup
+      function set_accounts_list(){
+        var select = document.createElement("select");
+        
+        user_accounts = JSON.parse(localStorage["upshot_user_accounts"]);
+        
+        for(u in user_accounts){
+          if(user_accounts[u].role!="customer"){
+            var option = document.createElement("option");
+            option.value = user_accounts[u].subdomain;
+            option.appendChild(document.createTextNode(user_accounts[u].name));
+            select.appendChild(option);
+          }
+        }
+        select.selectedIndex = 0;
+        select.id = "select";
+        
+        document.getElementById('accounts').appendChild(select) ;
+        
+        init_form();
+      }
+      
+      // prepare the action field with the selected subdomain
+      function init_form(){
+        // Set the form action. The url towards we post
+        var form = document.getElementById('new_upshot');
+        var select = document.getElementById("select");
+        
+        // var user_accounts = JSON.parse(localStorage["upshot_user_accounts"]);
+        // user_accounts[select.selectedIndex].subdomain
+        form.action = "http://" + select.value + ".upshot.dev/upshots";
+        
+        // Listen to changes in the select list
+        select.addEventListener('change', function(){
+          form.action = "http://" + select.value + ".upshot.dev/upshots";
+        });
+      }
+      
+      function close_popup(){
+        window.close();
+      }
+      
+      function submission(){
+        
+        // UX : WE ARE SENDING, PLEASE WAIT
+        var form = document.getElementById('new_upshot');            
+        var img = document.getElementById('upshot');
+        var accounts = document.getElementById('accounts');
+        var main = document.getElementById('main');
+            
+        form.style.visibility = "hidden";
+        form.style.display = "none";
+        accounts.style.visibility = "hidden";
+        accounts.style.display = "none";
+        
+        main.style.width = 200;
+        var load = document.createElement("img");
+        load.src = "ajax-loader.gif";
+        load.style.border = "none";
+        main.appendChild(load);
+        main.appendChild(document.createTextNode(" Sending upshot..."));
+        
+        // SENDING
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", form.action, true);
+        
+        // Re-create form to handle callback
+        var formData = new FormData();
+        // Re-add fields to new form (also avoid additional malicious fields.)
+        formData.append("upshot[base64]", document.getElementById('base64').value);
+        formData.append("upshot[title]", document.getElementById('title').value);
+        formData.append("upshot[temporary_owner_tag_list]", document.getElementById('tag_list').value);
+        
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4) {
+            
+            // CALLBACK SENT
+            if(xhr.status==201){
+              main.style.color = "#166F28";
+              main.style.font = "Georgia bold 22px";
+              main.innerHTML = "Your upshot has been successfully <b>created</b>" ;
+              // Google analyticts
+              trackButton('draft');
+            } else{
+              main.style.color = "#FF0000";
+              main.innerHTML = "An Error occured";
+              // Google analyticts
+              trackButton('error_on_draft');
+            }
+          }
+        }
+        xhr.send(formData);
+        
+      }
+      
+      // /////////////////
+      // GOOGLE ANALYTICS
+      // /////////////////
+      
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-8358011-10']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = 'https://ssl.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+      
+      function trackButton(button_name) {
+        _gaq.push(['_trackEvent', 'button_' + button_name, 'clicked']);
+        
+        if(button_name=='draft' || button_name=='error_on_draft'){
+          setTimeout(function() {
+            close_popup();
+          }, 1500);
+        }else{
+          close_popup();
+        }
+        
+      };
+      
+    </script>
+  </body>
+</html>
+

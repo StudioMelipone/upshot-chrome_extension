@@ -1,0 +1,239 @@
+<html>
+  <head>
+    <title>UpShot extension Options</title>
+  </head>
+  <style type="text/css" media="screen">
+    /* http://meyerweb.com/eric/tools/css/reset/ */
+    /* v1.0 | 20080212 */
+    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+    body { line-height: 1; }
+    ol, ul { list-style: none; }
+    blockquote, q { quotes: none; }
+    blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+    :focus { outline: 0; }
+    ins { text-decoration: none; }
+    del { text-decoration: line-through; }
+    /* tables still need 'cellspacing="0"' in the markup */
+    table { border-collapse: collapse; border-spacing: 0; }
+    /* Our styles */
+    h1 { font-style: italic; word-spacing: 0px; font-family: Georgia, "Times New Roman", Times, serif; font-size: 24px; font-weight: normal; }
+    ol { margin: 0; }
+  	ol li { background: url("alert-overlay.png") repeat-x scroll 0 0 #FFE9CC; list-style: none; padding: 5px 10px; margin-bottom: 9px; border: 1px solid rgba(0, 0, 0, 0.1); border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; }
+  	label { float: none !important; color: #3B3B3B; margin-bottom: 9px; text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6); }
+    body{ background : #EEE; font-family: Lucida Sans, Lucida Grande, Lucida Sans Unicode, sans-serif; color: #555; }
+    div.options { background: #eee; }
+    div.main { width: 990px; margin: 100px auto 0 auto; }
+    div.options div.logo { background-color: #fff; padding: 18px 0px; text-align: center; }
+    div.options h1 { background-color: #3B3B3B; color: #FFF; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5); margin: 0; top: 0; padding: 18px 0px 18px 18px; }
+    div.options .fields { background-color: #fff; padding-left: 9px; padding-bottom: 9px; padding-right: 9px; }
+    small { font-size: 11px; }
+    .w2 { width: 486px; }
+    .fl { float: left; }
+    .fr { float: right; }
+    .s-caps { font-variant: small-caps; }
+    .mt9 { margin-top: 9px; }
+    input[type='text'], input[type='password']{ border: 1px solid rgba(0, 0, 0, 0.2); border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px;    border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; font-size: 22px; outline: none; padding: 9px; width: 428px; }
+    .button, a.button { line-height: 26px; color: #3B3B3B; border: solid 1px rgba(0, 0, 0, 0.2); text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5); ; background: #eee url("alert-overlay.png") repeat-x; display: inline-block; padding: 0px 10px; text-decoration: none; position: relative; cursor: pointer; font-size: 12px; padding-top: 2x; margin-top: 9px; font-weight: normal; border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px;    border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; }
+    .button:hover, a:hover.button { color: #fff; /*border: solid 1px rgba(255, 255, 255, 0.8);*/ /*text-shadow: none;*/ background-color: #79A0B2; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); }
+    .button:active { background-color: #5d90a9; top: 6px; }
+    .button img { float: left; margin: 5px 5px 0px 0px; }
+    .button.big { /*line-height: 36px;*/ padding: 6px 18px; font-size: 15px; /*height: 35px;*/ }
+    a.button { margin: 9px 0px 18px; top: 5px; /*background-color: transparent;*/ }
+    .button.green { color: #ffef67 !important; background-color: #388B42; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);  }
+    .button:hover.green { background-color: #2B6D33; }
+    /* UPSHOT */
+    .drop-shadow {
+    	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+      background: none repeat scroll 0 0 #FFFFFF;
+      margin: 2em auto 5em;
+      position: relative;
+    }
+    .drop-shadow:before, .drop-shadow:after {
+      content: "";
+      height: 50%;
+      left: 13px;
+      position: absolute;
+      top: 10px;
+      width: 50%;
+      z-index: -2;
+    }
+    .drop-shadow:after {
+      left: auto;
+      right: 13px;
+    }
+    .round:before, .round:after {
+    	-webkit-box-shadow: -15px 10px 20px rgba(0, 0, 0, 0.5);
+    	-webkit-transform: rotate(-3deg);
+    	box-shadow: -15px 10px 20px rgba(0, 0, 0, 0.5);
+      max-width: 300px;
+    }
+    .round:after {
+    	-webkit-box-shadow: 15px 10px 20px rgba(0, 0, 0, 0.5);
+    	-webkit-transform: rotate(3deg);
+    	box-shadow: 15px 10px 20px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+  <body onload="restore_options()">
+    <div class="main">
+      
+      <div class="options w2 fl">
+        <div class="drop-shadow round">
+      	  <div class="logo">
+            <img src="logo.png" alt="UpShot">
+            <p class="s-caps">Chrome Extension</p>
+          </div>
+          <h1>
+            Your settings
+            <span id="status"></span>
+          </h1>
+          <div class="fields mt9">
+            <ol>
+              <li>
+                <label>
+                  Email
+                  <input type="text" id="email"/>
+                </label>
+              </li>
+              <li>
+                <label>
+                	Your token
+                  <input type="password" id="password"/>
+                </label>
+                <p><small>to get your token just go your profile page on http://upshotapp.com</small></p>
+              </li>
+              <li>
+                <a class="button green big" onclick="save_options()">Save</a>
+                <span id="connection_status"></span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      
+      <div class="options w2 fr">
+        <div class="drop-shadow round">
+          <h1>Your Accounts</h1>
+          <span id="has_client" style="display:none;">
+            <img src="error.png">
+            <small>Les comptes dont vous &ecirc;tes simple client de seront pas utilis&eacute;s.</small>
+          </span>
+          <table id ="accounts" style="display:none;" class="drop-shadow round">
+            <thead>
+              <tr id="accounts_title">
+                <th>Account</th>
+                <th>Subdomain</th>
+                <th>Plan</th>
+                <th>Role</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+        
+    </div>
+    <script type="text/javascript" charset="utf-8" src="base64.js"></script>
+    <script type="text/javascript" charset="utf-8" src="upshot.js"></script>
+    <script type="text/javascript">
+
+      // Saves options to localStorage.
+      function save_options() {
+        var email = document.getElementById("email").value;
+        localStorage["upshot_email"] = email;
+
+        var password = document.getElementById("password").value;
+        localStorage["upshot_password"] = password;
+
+        // Update status to let user know options were saved.
+        var status = document.getElementById("status");
+        status.innerHTML = "Options Saved.";
+        setTimeout(function() {
+          status.innerHTML = "";
+        }, 750);
+        
+        localStorage["upshot_has_client"] = false;
+
+        // connexion to upshot
+        connexion(email, password);
+      }
+
+      // Restores select box state to saved value from localStorage.
+      function restore_options() {
+        var my_email = localStorage["upshot_email"];
+        if (!my_email) {
+          return;
+        }
+        var email = document.getElementById("email");
+        email.value = my_email;
+
+        var my_password = localStorage["upshot_password"];
+        if (!my_password) {
+          return;
+        }
+        var password = document.getElementById("password");
+        password.value = my_password;
+
+
+        if(localStorage["upshot_user_accounts"]!="null"){
+          set_user_accounts(JSON.parse(localStorage["upshot_user_accounts"]));
+        }
+
+        if( localStorage["upshot_id"]!=null && localStorage["upshot_id"]!="null" ){
+          document.getElementById('connection_status').textContent = "Connected";
+        } 
+
+      }
+      
+      // Show the table of user accounts & register them
+      function set_user_accounts(user_accounts){
+      	if(user_accounts!=null && user_accounts!="null" ){
+
+      		// STEP 1 : show the table
+      		var accounts = document.getElementById("accounts");
+
+      		// remove tbody if already exists
+      		if(accounts.getElementsByTagName('tbody')[0]!=null){
+      			accounts.removeChild(accounts.getElementsByTagName('tbody')[0]);
+      		}
+
+      	  accounts.style.display = 'block';
+      		var tbody = document.createElement("tbody");
+
+      		var i=0;
+
+      		for(u in user_accounts){
+      		    var tr = document.createElement("tr");
+        			tr.align = 'center';
+        			if(user_accounts[u].role=="customer"){
+        		    document.getElementById("has_client").style.display = "block";
+        		    tr.style.color = "#ccc";
+        		    localStorage["upshot_has_client"] = true; 
+      		    }
+      		    
+        			var td1 = document.createElement("td"); //name
+        			var td2 = document.createElement("td"); //subdomain
+        			var td3 = document.createElement("td"); //plan 
+        			var td4 = document.createElement("td"); //role
+
+        			td1.appendChild(document.createTextNode(user_accounts[u].name));
+        			td2.appendChild(document.createTextNode(user_accounts[u].subdomain));
+        			td3.appendChild(document.createTextNode(user_accounts[u].plan));
+        			td4.appendChild(document.createTextNode(user_accounts[u].role));
+
+        			tr.appendChild(td1);
+        			tr.appendChild(td2);
+        			tr.appendChild(td3);
+        			tr.appendChild(td4);
+        			tbody.appendChild(tr);
+  
+      		}
+      		accounts.appendChild(tbody);
+
+      		// STEP 2 : save them to local storage
+      		localStorage["upshot_user_accounts"] = JSON.stringify(user_accounts);
+      	}
+      }
+
+    </script>
+  </body>
+</html>
