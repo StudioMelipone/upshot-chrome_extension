@@ -4,7 +4,7 @@ function connexion(email, token){
 
 	var params = "email="+email+"&token="+token;
 	
-	xhr.open("GET", "http://upshot.dev/users/get_id.json?"+params, true);
+	xhr.open("GET", "http://eupchote.com/users/get_id.json?"+params, true);
   
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
