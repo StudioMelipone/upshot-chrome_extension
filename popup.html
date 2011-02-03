@@ -119,7 +119,7 @@
           // needed to be shown in popop img tag, but not a valid base64 format:
           // data:image/jpg;base64,THE_BASE64_CODE
           var length = img.length;
-          document.getElementById("base64").value = screenshotUrl.substr(22, length);
+          document.getElementById("base64").value = screenshotUrl;
 
           // SET THE USER_ID
           // document.getElementById("user_id").value = localStorage["upshot_id"];
@@ -213,7 +213,7 @@
           if (xhr.readyState == 4) {
             
             // CALLBACK SENT
-            if(xhr.status==201){
+            if(xhr.status==201 || xhr.status==200){
               main.style.color = "#166F28";
               main.style.font = "Georgia bold 22px";
               main.innerHTML = "Your upshot has been successfully <b>created</b>" ;
