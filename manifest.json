@@ -12,6 +12,5 @@
     "default_title": "UpShot Chrome Extension",
     "popup": "popup.html"
   },
-"permissions":["tabs", "http://upshotapp.com/", "http://eupchote.com/", "http://upshot.dev/", "http://*/*", "https://*/*"],
-"options_page": "options.html"
+"permissions":["tabs", "http://upshotapp.com/", "http://eupchote.com/", "http://upshot.dev/", "http://*/*", "https://*/*"]
 }

@@ -3,6 +3,34 @@
     <title>UpShot Chrome Extension</title>
   </head>
   <style type="text/css" media="screen">
+    
+    /* http://meyerweb.com/eric/tools/css/reset/ */
+    /* v1.0 | 20080212 */
+    html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+    body { line-height: 1; }
+    ol, ul { list-style: none; }
+    blockquote, q { quotes: none; }
+    blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+    :focus { outline: 0; }
+    ins { text-decoration: none; }
+    del { text-decoration: line-through; }
+    /* tables still need 'cellspacing="0"' in the markup */
+    table { border-collapse: collapse; border-spacing: 0; }
+    /* Our styles */
+    h1 { font-style: italic; word-spacing: 0px; font-family: Georgia, "Times New Roman", Times, serif; font-size: 24px; font-weight: normal; }
+    ol { margin: 0; }
+  	ol li { background: url("alert-overlay.png") repeat-x scroll 0 0 #FFE9CC; list-style: none; padding: 5px 10px; margin-bottom: 9px; border: 1px solid rgba(0, 0, 0, 0.1); border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px; border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; }
+  	label { float: none !important; color: #3B3B3B; margin-bottom: 9px; text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6); }
+    body{ font-family: Lucida Sans, Lucida Grande, Lucida Sans Unicode, sans-serif; color: #555;min-width: 250px; 	min-height: 250px ; }
+    .button, a.button { line-height: 26px; color: #3B3B3B; border: solid 1px rgba(0, 0, 0, 0.2); text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.5); ; background: #eee url("alert-overlay.png") repeat-x; display: inline-block; padding: 0px 10px; text-decoration: none; position: relative; cursor: pointer; font-size: 12px; padding-top: 2x; margin-top: 9px; font-weight: normal; border-bottom-left-radius: 5px 5px; border-bottom-right-radius: 5px 5px;    border-top-left-radius: 5px 5px; border-top-right-radius: 5px 5px; }
+    .button:hover, a:hover.button { color: #fff; /*border: solid 1px rgba(255, 255, 255, 0.8);*/ /*text-shadow: none;*/ background-color: #79A0B2; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); }
+    .button:active { background-color: #5d90a9; top: 6px; }
+    .button img { float: left; margin: 5px 5px 0px 0px; }
+    .button.big { /*line-height: 36px;*/ padding: 6px 18px; font-size: 15px; /*height: 35px;*/ }
+    .button { margin: 9px 0px 18px; top: 5px; /*background-color: transparent;*/ }
+    .button.green { color: #ffef67 !important; background-color: #388B42; text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);  }
+    .button:hover.green { background-color: #2B6D33; }
+    
     button#Draft{
       background: #EEE;
       text-shadow: rgba(0, 0, 0, 0.496094) 1px 1px 0px;
@@ -56,6 +84,33 @@
     img{
       border: 1px solid #ccc;
     }
+    #upshot_chrome_close{
+      position: absolute ;
+    	top: 2px ;
+    	right: 2px ;
+    	cursor: pointer; 
+    	border: none ;
+    }
+    #upshot_chrome_close img{
+      border: none ;
+    }
+    
+    #upshot_chrome_logo, #upshot_chrome_logo img, #upshot_chrome_logo p{
+      border: none;
+      text-align: center;
+    	margin: 5px auto ;
+    	opacity: 1;
+    	line-height: 1.5em ;
+    	font-size: 22px ;
+    	font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif ;
+    	color: #000;
+    }
+    #upshot_chrome_box, #upshot_chrome_box p{
+      font-size: 12px;
+      line-height: 1.5em;
+      color: #000;
+      text-align: center;
+    }
   </style>
   <body>
     <div id="main">
@@ -84,10 +139,46 @@
         document.getElementById('new_upshot').style.display = "none";
         document.getElementById('upshot').style.display = "none";
         document.getElementById('accounts').style.width = 300;
-        document.getElementById('accounts').innerHTML = "Votre compte n'est pas param&eacute;tr&eacute; !<br/>" 
-                                                        + "Connectez votre compte UpShot, et c'est parti !" ;
+        
+        var box = '';
+        box = box + "\
+          <div id='upshot_chrome_box'>\
+            <p>\
+              <a id='upshot_chrome_close' type='reset' formnovalidate='formnovalidate'>\
+                <img src='cancel.png' />\
+              </a>\
+            </p>\
+        	  <div id='upshot_chrome_logo'>\
+              <img src='logo.png' alt='UpShot'>\
+              <p>Safari Extension</p>\
+            </div>\
+            <p>\
+              You're not logged (anymore) in UpShot.<br/>\
+              <small>Please log in to send upshots to your account(s)</small><br/>\
+            </p>\
+            <p>\
+              <button type='button' formnovalidate='formnovalidate' class='button green big' id='upshot_chrome_login'>Login</button>\
+            </p>\
+          </div>";
+        document.getElementById('accounts').innerHTML = box;
+        
+        var close_button = document.getElementById("upshot_chrome_close");
+        
+        // Listen to changes in the select list
+        close_button.addEventListener('click', function(){
+          trackButton("close");
+        });
+        
+        // new tab to login
+        var login_button = document.getElementById("upshot_chrome_login");
+        
+        login_button.addEventListener('click', function(){
+          chrome.tabs.create({url:"http://eupchote.com/login"});
+          trackButton("login");
+        });
+        
         // document.getElementById('optionner').addEventListener('click', function(){
-          chrome.tabs.create({url:"options.html"});
+          // chrome.tabs.create({url:"options.html"});
         // });
       }
       else {
