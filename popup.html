@@ -136,47 +136,113 @@
       
       // If no config yet : options panel to do it.
       if(localStorage["upshot_id"]==null || localStorage["upshot_id"]=="null"){
-        document.getElementById('new_upshot').style.display = "none";
-        document.getElementById('upshot').style.display = "none";
-        document.getElementById('accounts').style.width = 300;
         
-        var box = '';
-        box = box + "\
-          <div id='upshot_chrome_box'>\
-            <p>\
-              <a id='upshot_chrome_close' type='reset' formnovalidate='formnovalidate'>\
-                <img src='cancel.png' />\
-              </a>\
-            </p>\
-        	  <div id='upshot_chrome_logo'>\
-              <img src='logo.png' alt='UpShot'>\
-              <p>Safari Extension</p>\
-            </div>\
-            <p>\
-              You're not logged (anymore) in UpShot.<br/>\
-              <small>Please log in to send upshots to your account(s)</small><br/>\
-            </p>\
-            <p>\
-              <button type='button' formnovalidate='formnovalidate' class='button green big' id='upshot_chrome_login'>Login</button>\
-            </p>\
-          </div>";
-        document.getElementById('accounts').innerHTML = box;
         
-        var close_button = document.getElementById("upshot_chrome_close");
-        
-        // Listen to changes in the select list
-        close_button.addEventListener('click', function(){
-          trackButton("close");
-        });
-        
-        // new tab to login
-        var login_button = document.getElementById("upshot_chrome_login");
-        
-        login_button.addEventListener('click', function(){
-          chrome.tabs.create({url:"http://eupchote.com/login"});
-          trackButton("login");
-        });
-        
+        var xhr = new XMLHttpRequest();
+
+      	xhr.open("GET", "http://eupchote.com/users/get_id.json", true);
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == 4) {
+            // JSON.parse does not evaluate the attacker's scripts.
+            var resp = JSON.parse(xhr.responseText);
+
+            if(resp.status==200 && resp.return==true){
+
+              localStorage["upshot_id"] = resp.id;
+              localStorage["upshot_user_accounts"] = JSON.stringify(resp.user_accounts);
+              set_accounts_list();
+              
+              // Take the screenshot and show it
+              chrome.tabs.captureVisibleTab(null, function(img) {
+
+                // /////////////
+                // SCREENSHOT
+                // ////////////
+                var screenshotUrl = img;
+                document.getElementById('upshot').src = screenshotUrl;
+
+                // ////////////
+                // CONNEXION
+                // ////////////
+                if(localStorage["upshot_id"]==null 
+                    || localStorage["upshot_id"]=="null" 
+                    || localStorage["upshot_id"]=="undefined" 
+                    || localStorage["upshot_id"]=="")
+                {
+                  connexion();
+                }
+
+                // init the accounts list
+                set_accounts_list();
+
+                // SET THE base64 IN FORM
+                // Have to remove the needed beinning of the string
+                // needed to be shown in popop img tag, but not a valid base64 format:
+                // data:image/jpg;base64,THE_BASE64_CODE
+                var length = img.length;
+                document.getElementById("base64").value = screenshotUrl;
+
+                // SET THE USER_ID
+                // document.getElementById("user_id").value = localStorage["upshot_id"];
+
+                // SET THE TITLE IN FORM
+                chrome.tabs.getSelected(null, function(tab){
+                    document.getElementById("title").value = tab.url;
+                });
+
+              });
+
+            } else {
+              localStorage["upshot_id"] = null;
+        			localStorage["upshot_user_accounts"] = null;
+
+              document.getElementById('new_upshot').style.display = "none";
+              document.getElementById('upshot').style.display = "none";
+              document.getElementById('accounts').style.width = 300;
+
+              var box = '';
+              box = box + "\
+                <div id='upshot_chrome_box'>\
+                  <p>\
+                    <a id='upshot_chrome_close' type='reset' formnovalidate='formnovalidate'>\
+                      <img src='cancel.png' />\
+                    </a>\
+                  </p>\
+              	  <div id='upshot_chrome_logo'>\
+                    <img src='logo.png' alt='UpShot'>\
+                    <p>Safari Extension</p>\
+                  </div>\
+                  <p>\
+                    You're not logged (anymore) in UpShot.<br/>\
+                    <small>Please log in to send upshots to your account(s)</small><br/>\
+                  </p>\
+                  <p>\
+                    <button type='button' formnovalidate='formnovalidate' class='button green big' id='upshot_chrome_login'>Login</button>\
+                  </p>\
+                </div>";
+              document.getElementById('accounts').innerHTML = box;
+
+              var close_button = document.getElementById("upshot_chrome_close");
+
+              // Listen to changes in the select list
+              close_button.addEventListener('click', function(){
+                trackButton("close");
+              });
+
+              // new tab to login
+              var login_button = document.getElementById("upshot_chrome_login");
+
+              login_button.addEventListener('click', function(){
+                chrome.tabs.create({url:"http://eupchote.com/login"});
+                trackButton("login");
+              });
+
+            }
+          }
+        }
+        xhr.send();
+
         // document.getElementById('optionner').addEventListener('click', function(){
           // chrome.tabs.create({url:"options.html"});
         // });
@@ -199,7 +265,7 @@
               || localStorage["upshot_id"]=="undefined" 
               || localStorage["upshot_id"]=="")
           {
-            connexion(localStorage["upshot_email"], localStorage["upshot_token"]);
+            connexion();
           }
 
           // init the accounts list
@@ -222,7 +288,6 @@
 
         });
       }
-
       
       // Create the select tag in the popup
       function set_accounts_list(){
@@ -297,8 +362,8 @@
         formData.append("upshot[base64]", document.getElementById('base64').value);
         formData.append("upshot[title]", document.getElementById('title').value);
         formData.append("upshot[temporary_owner_tag_list]", document.getElementById('tag_list').value);
-        formData.append("email", localStorage["upshot_email"]);
-        formData.append("token", localStorage["upshot_token"]);
+        // formData.append("email", localStorage["upshot_email"]);
+        // formData.append("token", localStorage["upshot_token"]);
         
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
