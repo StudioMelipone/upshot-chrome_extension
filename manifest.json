@@ -1,6 +1,6 @@
 {
 "name": "UpShot",
-"version": "0.4",
+"version": "0.5",
 "description": "An Extension for UpShot to help screenshooting drafts easily",
 "icons": {"16": "logo-upshot-just-16.png",
           "32":"logo-upshot-just-32.png",
