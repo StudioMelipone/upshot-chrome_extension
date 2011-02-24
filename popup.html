@@ -128,71 +128,24 @@
         </form>
       </div>
     </div>
-    <script type="text/javascript" charset="utf-8" src="base64.js">
-    </script>
-    <script type="text/javascript" charset="utf-8" src="upshot.js">
-    </script>
     <script>
       
-      // If no config yet : options panel to do it.
-      if(localStorage["upshot_id"]==null || localStorage["upshot_id"]=="null"){
+      // If no config yet
+      if(localStorage["upshot_domain"]==null  && localStorage["upshot_id"]==null ){
         
+        localStorage["upshot_domain"] = "eupchote.com";
         
         var xhr = new XMLHttpRequest();
-
-      	xhr.open("GET", "http://eupchote.com/users/get_id.json", true);
-
+      	xhr.open("GET", "http://" + localStorage["upshot_domain"] + "/users/get_id.json", true);
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
             // JSON.parse does not evaluate the attacker's scripts.
             var resp = JSON.parse(xhr.responseText);
-
             if(resp.status==200 && resp.return==true){
-
               localStorage["upshot_id"] = resp.id;
               localStorage["upshot_user_accounts"] = JSON.stringify(resp.user_accounts);
               set_accounts_list();
-              
-              // Take the screenshot and show it
-              chrome.tabs.captureVisibleTab(null, function(img) {
-
-                // /////////////
-                // SCREENSHOT
-                // ////////////
-                var screenshotUrl = img;
-                document.getElementById('upshot').src = screenshotUrl;
-
-                // ////////////
-                // CONNEXION
-                // ////////////
-                if(localStorage["upshot_id"]==null 
-                    || localStorage["upshot_id"]=="null" 
-                    || localStorage["upshot_id"]=="undefined" 
-                    || localStorage["upshot_id"]=="")
-                {
-                  connexion();
-                }
-
-                // init the accounts list
-                set_accounts_list();
-
-                // SET THE base64 IN FORM
-                // Have to remove the needed beinning of the string
-                // needed to be shown in popop img tag, but not a valid base64 format:
-                // data:image/jpg;base64,THE_BASE64_CODE
-                var length = img.length;
-                document.getElementById("base64").value = screenshotUrl;
-
-                // SET THE USER_ID
-                // document.getElementById("user_id").value = localStorage["upshot_id"];
-
-                // SET THE TITLE IN FORM
-                chrome.tabs.getSelected(null, function(tab){
-                    document.getElementById("title").value = tab.url;
-                });
-
-              });
-
+              screenshot();
             } else {
               localStorage["upshot_id"] = null;
         			localStorage["upshot_user_accounts"] = null;
@@ -234,7 +187,7 @@
               var login_button = document.getElementById("upshot_chrome_login");
 
               login_button.addEventListener('click', function(){
-                chrome.tabs.create({url:"http://eupchote.com/login"});
+                chrome.tabs.create({url: "http://" + localStorage["upshot_domain"] + "/login"});
                 trackButton("login");
               });
 
@@ -243,33 +196,30 @@
         }
         xhr.send();
 
-        // document.getElementById('optionner').addEventListener('click', function(){
-          // chrome.tabs.create({url:"options.html"});
-        // });
       }
       else {
+        set_accounts_list();
+        screenshot();
+      }
+      
+      function screenshot(){
         // Take the screenshot and show it
         chrome.tabs.captureVisibleTab(null, function(img) {
-
           // /////////////
           // SCREENSHOT
           // ////////////
           var screenshotUrl = img;
           document.getElementById('upshot').src = screenshotUrl;
-
-          // ////////////
-          // CONNEXION
-          // ////////////
-          if(localStorage["upshot_id"]==null 
-              || localStorage["upshot_id"]=="null" 
-              || localStorage["upshot_id"]=="undefined" 
-              || localStorage["upshot_id"]=="")
-          {
-            connexion();
-          }
-
-          // init the accounts list
-          set_accounts_list();
+          
+          // // ////////////
+          // // CONNEXION
+          // // ////////////
+          // if(localStorage["upshot_id"]==null || localStorage["upshot_id"]=="null" || localStorage["upshot_id"]=="undefined" || localStorage["upshot_id"]==""){
+          //   connexion();
+          // }
+          // 
+          // // init the accounts list
+          // set_accounts_list();
 
           // SET THE base64 IN FORM
           // Have to remove the needed beinning of the string
@@ -319,11 +269,11 @@
         
         // var user_accounts = JSON.parse(localStorage["upshot_user_accounts"]);
         // user_accounts[select.selectedIndex].subdomain
-        form.action = "http://" + select.value + ".eupchote.com/upshots";
+        form.action = "http://" + select.value + "." + localStorage["upshot_domain"] + "/upshots";
         
         // Listen to changes in the select list
         select.addEventListener('change', function(){
-          form.action = "http://" + select.value + ".eupchote.com/upshots";
+          form.action = "http://" + select.value + "." + localStorage["upshot_domain"] + "/upshots";
         });
       }
       
