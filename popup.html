@@ -126,7 +126,7 @@
       
       if( !localStorage["upshot_id"] || localStorage["upshot_id"]=="null" ){
         // First Launch
-        localStorage["upshot_domain"] = "eupchote.com";
+        localStorage["upshot_domain"] = "upshotapp.com";
         var xhr = new XMLHttpRequest();
       	xhr.open("GET", "http://" + localStorage["upshot_domain"] + "/users/get_id.json", true);
         xhr.onreadystatechange = function() {
