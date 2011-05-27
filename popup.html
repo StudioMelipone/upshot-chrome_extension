@@ -55,6 +55,33 @@
     button#Draft:hover{
       background: #79A0B2;
     }
+    
+    button#Public{
+      background: #EEE;
+      text-shadow: rgba(255, 255, 255, 0.496094) 1px 1px 0px;
+      color: #3B3B3B !important;
+      font-size: 12px;
+      padding: 6px 14px;
+      -webkit-box-align: center;
+      -webkit-box-sizing: border-box;
+      -webkit-appearance: push-button;
+      -webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0px 1px 3px;
+      border: 1px solid rgba(0, 0, 0, 0.199219);
+      border-bottom-left-radius: 5px 5px;
+      border-bottom-right-radius: 5px 5px;
+      border-top-left-radius: 5px 5px;
+      border-top-right-radius: 5px 5px;
+      cursor: pointer;
+      font-weight: normal;
+      line-height: 16px;
+      text-decoration: none;
+      margin-top: 2em;
+      margin-left: 1em;
+    }
+    button#Public:hover{
+      background: #9AAACC;
+    }
+    
     a.red{
       text-shadow: rgba(255, 255, 255, 0.496094) 1px 1px 0px;
       color: #912A0C !important;
@@ -66,6 +93,9 @@
       margin-top: 1em;
       margin-left: 1em;
       text-decoration: none;
+    }
+    a.red:hover{
+      text-decoration: underline;
     }
     
     div#main{
@@ -108,6 +138,7 @@
   </style>
   <body>
     <div id="main">
+      <div id="last_public"></div>
       <img id="upshot" width="240"/>
       <div>
         <p id="accounts"></p>
@@ -116,7 +147,8 @@
           <input type="hidden" name="upshot[title]" value="" id="title">
           <input type="hidden" name="upshot[temporary_owner_tag_list]" value="" id="tag_list">
           <p>
-            <button type="button" name="commit" value="Draft" id="Draft" onclick="submission();" formnovalidate="formnovalidate">Draft</button>
+            <button type="button" name="commit" value="Draft" id="Draft" onclick="submission('draft');" formnovalidate="formnovalidate">Draft</button>
+            <button type="button" name="commit" value="Public" id="Public" onclick="submission('public');" formnovalidate="formnovalidate">Public</button>
             <a class="red" onclick="trackButton('cancel');" type="reset" href="#">Cancel</a>
           <p>
         </form>
@@ -258,9 +290,19 @@
         select.addEventListener('change', function(){
           form.action = "http://" + select.value + "." + localStorage["upshot_domain"] + "/upshots";
         });
+        
+        // init eventual last public upshot hash to display
+        var last_public = document.getElementById('last_public');
+        var txtarea = document.createElement("textarea");
+        txtarea.value = localStorage["upshot_last_public"];
+        txtarea.setAttribute('readonly','readonly');
+        txtarea.setAttribute('cols', '31');
+        txtarea.setAttribute('rows', '3');
+        last_public.appendChild(document.createTextNode("Last public upshot :"));
+        last_public.appendChild(txtarea);
       }
       
-      function submission(){
+      function submission(button){
         // UX : WE ARE SENDING, PLEASE WAIT
         var form = document.getElementById('new_upshot');            
         var img = document.getElementById('upshot');
@@ -291,19 +333,37 @@
         formData.append("upshot[base64]", document.getElementById('base64').value);
         formData.append("upshot[title]", document.getElementById('title').value);
         formData.append("upshot[temporary_owner_tag_list]", document.getElementById('tag_list').value);
+        if(button=="public"){
+          formData.append("upshot[is_public]", true);
+        }
         // formData.append("email", localStorage["upshot_email"]);
         // formData.append("token", localStorage["upshot_token"]);
         
         xhr.onreadystatechange = function() {
           if (xhr.readyState == 4) {
-            
             // CALLBACK SENT
-            if(xhr.status==201){
+            if(xhr.status==201 || xhr.status==200){
               main.style.color = "#166F28";
               main.style.font = "Georgia bold 22px";
-              main.innerHTML = "Your upshot has been successfully <b>created</b>" ;
+              var main_content = "Your upshot has been successfully <b>created</b>" ;
+              if(button=="public"){
+                localStorage["upshot_last_public"] = JSON.parse(xhr.responseText).public_hash;
+                main_content += "<br/><br/>This upshot will be accessible with url :";
+              }
+              main.innerHTML = main_content;
+              
+              if(button=="public"){
+                // init eventual last public upshot hash to display
+                var txtarea = document.createElement("textarea");
+                txtarea.value = localStorage["upshot_last_public"];
+                txtarea.setAttribute('readonly','readonly');
+                txtarea.setAttribute('cols', '31');
+                txtarea.setAttribute('rows', '3');
+                main.appendChild(txtarea);
+              }
+              
               // Google analyticts
-              trackButton('draft');
+              trackButton(button);
             } else{
               main.style.color = "#FF0000";
               main.innerHTML = "An Error occured";
@@ -340,13 +400,13 @@
           setTimeout(function() {
             close_popup();
           }, 1500);
-        } 
-        else if(button_name=='error_on_draft'){
+        }else if(button_name=='public'){
+          // Do not close automatically.
+        }else if(button_name=='error_on_draft'){
           setTimeout(function() {
             login();
           }, 1500);
-        }
-        else{
+        }else{
           close_popup();
         }
         

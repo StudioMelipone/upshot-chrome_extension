@@ -2,7 +2,7 @@
 function connexion(){
   var xhr = new XMLHttpRequest();
 	
-	xhr.open("GET", "http://eupchote.com/users/get_id.json", true);
+	xhr.open("GET", "http://upshotapp.com/users/get_id.json", true);
   
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
