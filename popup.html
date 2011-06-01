@@ -292,14 +292,16 @@
         });
         
         // init eventual last public upshot hash to display
-        var last_public = document.getElementById('last_public');
-        var txtarea = document.createElement("textarea");
-        txtarea.value = localStorage["upshot_last_public"];
-        txtarea.setAttribute('readonly','readonly');
-        txtarea.setAttribute('cols', '31');
-        txtarea.setAttribute('rows', '3');
-        last_public.appendChild(document.createTextNode("Last public upshot :"));
-        last_public.appendChild(txtarea);
+        if(localStorage["upshot_last_public"] && localStorage["upshot_last_public"]!="null"){
+          var last_public = document.getElementById('last_public');
+          var txtarea = document.createElement("textarea");
+          txtarea.value = localStorage["upshot_last_public"];
+          txtarea.setAttribute('readonly','readonly');
+          txtarea.setAttribute('cols', '31');
+          txtarea.setAttribute('rows', '3');
+          last_public.appendChild(document.createTextNode("Last public upshot :"));
+          last_public.appendChild(txtarea);
+        }
       }
       
       function submission(button){
@@ -335,6 +337,7 @@
         formData.append("upshot[temporary_owner_tag_list]", document.getElementById('tag_list').value);
         if(button=="public"){
           formData.append("upshot[is_public]", true);
+          formData.append("save_as_active", true)
         }
         // formData.append("email", localStorage["upshot_email"]);
         // formData.append("token", localStorage["upshot_token"]);
